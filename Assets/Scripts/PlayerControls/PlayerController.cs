@@ -23,6 +23,14 @@ public class PlayerController : MonoBehaviour
     private bool isDashing;
     private float dashTime;
     private float lastDashTime;
+    [Header("Camera")]
+    [SerializeField] private CameraController cameraController;
+
+    [SerializeField] private Transform lookNorth;
+    [SerializeField] private Transform lookSouth;
+    [SerializeField] private Transform lookEast;
+    [SerializeField] private Transform lookWest;
+    private Transform lastCameraTarget;
 
     private void Awake()
     {
@@ -43,13 +51,13 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         moveInput = input.Player.Move.ReadValue<Vector2>();
-
+        HandleCameraInput();
         if (input.Player.Sprint.WasPressedThisFrame())
         {
             TryDash();
         }
     }
-    
+
     private void FixedUpdate()
     {
         Vector3 targetDir = new Vector3(moveInput.x, 0, moveInput.y);
@@ -99,5 +107,34 @@ public class PlayerController : MonoBehaviour
         isDashing = true;
         dashTime = dashDuration;
         lastDashTime = Time.time;
+    }
+
+    private void HandleCameraInput()
+    {
+        if (input.Player.LookNorth.IsPressed())
+        {
+            cameraController.SetCameraTarget(lookNorth);
+            return;
+        }
+
+        if (input.Player.LookSouth.IsPressed())
+        {
+            cameraController.SetCameraTarget(lookSouth);
+            return;
+        }
+
+        if (input.Player.LookEast.IsPressed())
+        {
+            cameraController.SetCameraTarget(lookEast);
+            return;
+        }
+
+        if (input.Player.LookWest.IsPressed())
+        {
+            cameraController.SetCameraTarget(lookWest);
+            return;
+        }
+
+        cameraController.ResetToPlayer();
     }
 }
